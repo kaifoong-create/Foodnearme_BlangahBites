@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blangah Bites</title>
+<meta name="description" content="A manga-styled food directory of hawker centres and dining spots within 2.5 km of 59 Telok Blangah Heights, with live distance, maps, ratings, and delivery links.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍜</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Darumadrop+One&family=Zen+Maru+Gothic:wght@400;500;700;900&family=DotGothic16&display=swap">
+<style>
+  :root{
+    --bg:#F5E9D6;
+    --bg-alt:#EEDDBF;
+    --surface:#FFFBF2;
+    --ink:#241B2F;
+    --ink-soft:#6B5A72;
+    --lantern:#D6432E;
+    --lantern-deep:#A82E1E;
+    --gold:#C9821F;
+    --jade:#3E7A62;
+    --jade-bg:#DCEFE6;
+    --mall-bg:#EADCF7;
+    --mall-ink:#5B3C8C;
+    --line:#D8C3A0;
+    --shadow:rgba(36,27,47,0.22);
+    --ring:#B4642A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#171227;
+      --bg-alt:#1F1836;
+      --surface:#241B3D;
+      --ink:#F5EEE0;
+      --ink-soft:#BDACCF;
+      --lantern:#FF6A4E;
+      --lantern-deep:#FF8A6E;
+      --gold:#FFC15E;
+      --jade:#7FCDA9;
+      --jade-bg:#1C3A2E;
+      --mall-bg:#3A2A5C;
+      --mall-ink:#D9C4FF;
+      --line:#3D2E5C;
+      --shadow:rgba(0,0,0,0.5);
+      --ring:#FFC15E;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#171227;
+    --bg-alt:#1F1836;
+    --surface:#241B3D;
+    --ink:#F5EEE0;
+    --ink-soft:#BDACCF;
+    --lantern:#FF6A4E;
+    --lantern-deep:#FF8A6E;
+    --gold:#FFC15E;
+    --jade:#7FCDA9;
+    --jade-bg:#1C3A2E;
+    --mall-bg:#3A2A5C;
+    --mall-ink:#D9C4FF;
+    --line:#3D2E5C;
+    --shadow:rgba(0,0,0,0.5);
+    --ring:#FFC15E;
+  }
+
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', sans-serif;
+    line-height:1.55;
+    padding-inline:16px;
+  }
+  a{color:inherit;}
+  h1,h2,h3{text-wrap:balance;}
+  .wrap{max-width:1040px;margin-inline:auto;}
+
+  :focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:4px;}
+
+  /* ---------- halftone texture ---------- */
+  .halftone{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background-image:radial-gradient(circle, var(--ink) 1px, transparent 1.4px);
+    background-size:14px 14px;
+    opacity:0.05;
+    z-index:0;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    margin-top:20px;
+    border:3px solid var(--ink);
+    border-radius:22px;
+    background:
+      repeating-linear-gradient(115deg, transparent 0 26px, color-mix(in srgb, var(--lantern) 10%, transparent) 26px 28px),
+      linear-gradient(160deg, var(--bg-alt), var(--bg));
+    box-shadow:7px 7px 0 var(--shadow);
+    padding:38px 28px 30px;
+    isolation:isolate;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    top:-40px; right:-60px;
+    width:260px; height:260px;
+    background:radial-gradient(circle, color-mix(in srgb, var(--gold) 55%, transparent), transparent 70%);
+    z-index:-1;
+  }
+  .ribbon{
+    display:inline-block;
+    background:var(--lantern);
+    color:#fff8ec;
+    font-family:'DotGothic16', monospace;
+    font-size:13px;
+    letter-spacing:.14em;
+    padding:5px 14px;
+    border-radius:999px;
+    transform:rotate(-2deg);
+    border:2px solid var(--ink);
+    box-shadow:3px 3px 0 var(--shadow);
+  }
+  .hero h1{
+    font-family:'Darumadrop One', 'Zen Maru Gothic', sans-serif;
+    font-size:clamp(2.4rem, 7vw, 4.1rem);
+    margin:16px 0 2px;
+    color:var(--lantern);
+    -webkit-text-stroke:1.5px var(--ink);
+    letter-spacing:.01em;
+    line-height:1.02;
+  }
+  .hero .jp{
+    font-family:'Zen Maru Gothic', sans-serif;
+    font-weight:700;
+    font-size:.95rem;
+    color:var(--ink-soft);
+    margin:0 0 18px;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .hero .jp .kanji{font-size:1.15rem;color:var(--ink);}
+  .hero p.lede{
+    max-width:56ch;
+    font-size:1.05rem;
+    margin:0 0 6px;
+  }
+  .hero .addr{
+    font-family:'DotGothic16', monospace;
+    font-size:.92rem;
+    color:var(--ink-soft);
+    background:var(--surface);
+    border:2px dashed var(--line);
+    border-radius:10px;
+    padding:8px 12px;
+    display:inline-block;
+    margin-top:10px;
+  }
+  .steam{
+    position:absolute;
+    bottom:-10px;
+    width:18px;height:70px;
+    border-radius:50%;
+    background:radial-gradient(ellipse at center, color-mix(in srgb, var(--gold) 40%, transparent), transparent 75%);
+    filter:blur(3px);
+    animation:rise 6s ease-in-out infinite;
+  }
+  .steam.s1{left:12%; animation-delay:0s;}
+  .steam.s2{left:22%; animation-delay:1.6s; height:55px;}
+  .steam.s3{right:16%; animation-delay:.8s;}
+  @keyframes rise{
+    0%{transform:translateY(0) scaleX(1); opacity:0;}
+    15%{opacity:.55;}
+    100%{transform:translateY(-90px) scaleX(1.6); opacity:0;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .steam{animation:none; display:none;}
+  }
+
+  /* ---------- filter bar ---------- */
+  .filter-bar{
+    position:sticky;
+    top:10px;
+    z-index:5;
+    margin-top:22px;
+    background:var(--surface);
+    border:3px solid var(--ink);
+    border-radius:16px;
+    box-shadow:5px 5px 0 var(--shadow);
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .filter-bar .label{
+    font-family:'DotGothic16', monospace;
+    font-size:.85rem;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+  .budget-group{display:flex;gap:8px;flex-wrap:wrap;}
+  .budget-btn{
+    font-family:'Zen Maru Gothic', sans-serif;
+    font-weight:700;
+    font-size:.95rem;
+    background:var(--bg);
+    color:var(--ink);
+    border:2.5px solid var(--ink);
+    border-radius:999px;
+    padding:7px 18px;
+    cursor:pointer;
+    transition:transform .12s ease, background .12s ease, color .12s ease;
+  }
+  .budget-btn:hover{transform:translateY(-2px) rotate(-1deg);}
+  .budget-btn[aria-pressed="true"]{
+    background:var(--lantern);
+    color:#fff8ec;
+    border-color:var(--ink);
+    box-shadow:3px 3px 0 var(--shadow);
+    transform:rotate(-1deg);
+  }
+  .results-count{
+    margin-left:auto;
+    font-family:'DotGothic16', monospace;
+    font-size:.9rem;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- grid ---------- */
+  .grid{
+    margin-top:22px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+    gap:20px;
+    padding-bottom:40px;
+  }
+  .card{
+    position:relative;
+    background:var(--surface);
+    border:2.5px solid var(--ink);
+    border-radius:16px;
+    box-shadow:6px 6px 0 var(--shadow);
+    padding:18px 18px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{transform:translate(-2px,-3px); box-shadow:8px 9px 0 var(--shadow);}
+  .card[hidden]{display:none;}
+
+  .tier{
+    position:absolute;
+    top:-2px; right:14px;
+    font-family:'DotGothic16', monospace;
+    font-size:.95rem;
+    font-weight:700;
+    background:var(--gold);
+    color:var(--ink);
+    border:2px solid var(--ink);
+    border-top:none;
+    padding:3px 10px 4px;
+    border-radius:0 0 8px 8px;
+  }
+  .card-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+  .card h2{
+    font-size:1.18rem;
+    margin:0;
+    font-weight:900;
+    line-height:1.25;
+    padding-right:38px;
+  }
+  .category-pill{
+    display:inline-block;
+    font-size:.72rem;
+    font-weight:700;
+    letter-spacing:.03em;
+    padding:3px 10px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .category-pill.hawker{background:var(--jade-bg); color:var(--jade);}
+  .category-pill.mall{background:var(--mall-bg); color:var(--mall-ink);}
+
+  .distance{
+    display:flex;
+    align-items:baseline;
+    gap:7px;
+    font-family:'DotGothic16', monospace;
+    color:var(--lantern);
+  }
+  .distance .num{font-size:1.5rem; font-weight:700; font-variant-numeric:tabular-nums;}
+  .distance .unit{font-size:.85rem; color:var(--ink-soft);}
+
+  .addr-line{font-size:.82rem; color:var(--ink-soft); margin:0;}
+  .blurb{font-size:.9rem; margin:0; color:var(--ink);}
+
+  .chips{display:flex; gap:6px; flex-wrap:wrap;}
+  .chip{
+    font-size:.72rem;
+    border:1.5px solid var(--line);
+    border-radius:999px;
+    padding:2px 9px;
+    color:var(--ink-soft);
+  }
+
+  .actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:auto;
+    padding-top:6px;
+  }
+  .actions a, .actions summary{
+    list-style:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    font-family:'Zen Maru Gothic', sans-serif;
+    font-weight:700;
+    font-size:.82rem;
+    text-decoration:none;
+    color:var(--ink);
+    background:var(--bg);
+    border:2px solid var(--ink);
+    border-radius:10px;
+    padding:8px 6px;
+    cursor:pointer;
+    transition:transform .12s ease, background .12s ease;
+  }
+  .actions summary::-webkit-details-marker{display:none;}
+  .actions a:hover, .actions summary:hover{transform:translateY(-2px); background:var(--gold); color:var(--ink);}
+  .actions a.grab:hover{background:var(--jade); color:#fff8ec;}
+  .actions a.panda:hover{background:var(--mall-ink); color:#fff8ec;}
+
+  .ratings-panel{
+    grid-column:1 / -1;
+    font-size:.82rem;
+    color:var(--ink-soft);
+    background:var(--bg-alt);
+    border:1.5px dashed var(--line);
+    border-radius:10px;
+    padding:8px 10px;
+    margin-top:2px;
+  }
+  .ratings-panel a{font-weight:700; color:var(--lantern); text-decoration:underline;}
+
+  footer{
+    max-width:1040px;
+    margin:10px auto 40px;
+    font-size:.8rem;
+    color:var(--ink-soft);
+    border-top:2px dashed var(--line);
+    padding-top:16px;
+  }
+  footer a{color:var(--lantern); font-weight:700;}
+
+  @media (max-width:480px){
+    .hero{padding:28px 18px 24px;}
+    .actions{grid-template-columns:1fr 1fr;}
+    .filter-bar{top:8px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="halftone" aria-hidden="true"></div>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="steam s1" aria-hidden="true"></span>
+    <span class="steam s2" aria-hidden="true"></span>
+    <span class="steam s3" aria-hidden="true"></span>
+    <span class="ribbon">2.5KM RADIUS QUEST</span>
+    <h1>Blangah Bites</h1>
+    <p class="jp"><span class="kanji">満腹御用達</span><span>manpuku goyōtashi — your go-to for a full stomach</span></p>
+    <p class="lede">Every hawker centre and dining spot within 2.5&nbsp;km of home, ranked by how far you'd have to walk to get there.</p>
+    <span class="addr">📍 HOME BASE — 59 Telok Blangah Heights, Singapore 100059</span>
+  </header>
+
+  <section class="filter-bar" aria-label="Filter by budget">
+    <span class="label">Budget</span>
+    <div class="budget-group" id="budgetGroup" role="group" aria-label="Budget filter">
+      <button class="budget-btn" data-budget="all" aria-pressed="true">All</button>
+      <button class="budget-btn" data-budget="1" aria-pressed="false">$</button>
+      <button class="budget-btn" data-budget="2" aria-pressed="false">$$</button>
+      <button class="budget-btn" data-budget="3" aria-pressed="false">$$$</button>
+    </div>
+    <span class="results-count" id="resultsCount"></span>
+  </section>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    Distances are straight-line (as-the-crow-flies) from 59 Telok Blangah Heights, computed live in your browser — actual walking distance will run a little longer. Ratings aren't pulled from a live source yet; tap ⭐ Ratings to check current scores on Google. Map, GrabFood and foodpanda buttons open those services in a new tab so you can confirm hours and delivery coverage before you go.
+  </footer>
+</div>
+
+<script>
+(function(){
+  var HOME = {lat:1.275353, lng:103.813588};
+
+  var PLACES = [
+    {
+      name:"Telok Blangah Food Centre",
+      address:"79 Telok Blangah Drive, Singapore 100079",
+      lat:1.273356, lng:103.807618,
+      category:"hawker", budget:1,
+      cuisines:["Chinese","Noodles","Local"],
+      blurb:"Neighbourhood coffeeshop-style hawker centre for classic wanton mee, chicken rice and fishball noodles."
+    },
+    {
+      name:"Telok Blangah Crescent Market & Food Centre",
+      address:"11 Telok Blangah Crescent, Singapore 090011",
+      lat:1.277368, lng:103.818652,
+      category:"hawker", budget:1,
+      cuisines:["Chinese","Indian","Local"],
+      blurb:"Wet market and hawker centre with a long-running lineup of zi char, roast meat and curry stalls."
+    },
+    {
+      name:"Seah Im Food Centre",
+      address:"2 Seah Im Road, Singapore 099114",
+      lat:1.266568, lng:103.819248,
+      category:"hawker", budget:1,
+      cuisines:["Seafood","Chinese"],
+      blurb:"Pit stop near the Sentosa cable car station, known for seafood, satay and prawn noodle stalls."
+    },
+    {
+      name:"Alexandra Village Food Centre",
+      address:"120 Bukit Merah Lane 1, Singapore 150120",
+      lat:1.286306, lng:103.804493,
+      category:"hawker", budget:1,
+      cuisines:["Chinese","Local"],
+      blurb:"Home turf of Zhen Shan Mei's cult claypot laksa and lor mee, plus a solid bench of noodle stalls."
+    },
+    {
+      name:"ABC Brickworks Market & Food Centre",
+      address:"6 Jalan Bukit Merah, Singapore 150006",
+      lat:1.286883, lng:103.808131,
+      category:"hawker", budget:1,
+      cuisines:["Chinese","Local"],
+      blurb:"Well-loved for claypot rice and char kway teow, with a busy fruit-and-veg wet market downstairs."
+    },
+    {
+      name:"Bukit Merah View Market & Hawker Centre",
+      address:"115 Bukit Merah View, Singapore 151115",
+      lat:1.285504, lng:103.821823,
+      category:"hawker", budget:1,
+      cuisines:["Chinese","Malay"],
+      blurb:"Quiet estate hawker centre with reliable economic rice, fishball noodles and a Malay food corner."
+    },
+    {
+      name:"Redhill Market & Food Centre",
+      address:"79 Redhill Lane, Singapore 150079",
+      lat:1.287843, lng:103.818352,
+      category:"hawker", budget:1,
+      cuisines:["Chinese","Local"],
+      blurb:"Old-school Redhill estate favourite for prawn noodles, nasi lemak and strong kopi."
+    },
+    {
+      name:"Beo Crescent Market & Food Centre",
+      address:"38A Beo Crescent, Singapore 169982",
+      lat:1.288831, lng:103.827354,
+      category:"hawker", budget:1,
+      cuisines:["Chinese","Local"],
+      blurb:"Tiong Bahru-adjacent hawker centre known for char kway teow and roasted delights."
+    },
+    {
+      name:"Tiong Bahru Market",
+      address:"30 Seng Poh Road, Singapore 168898",
+      lat:1.284786, lng:103.832182,
+      category:"hawker", budget:1,
+      cuisines:["Chinese","Local"],
+      blurb:"Iconic two-storey market famed for chwee kueh, lor mee and a legendary Sunday-morning queue."
+    },
+    {
+      name:"HarbourFront Centre",
+      address:"1 Maritime Square, Singapore 099253",
+      lat:1.263970, lng:103.820243,
+      category:"mall", budget:2,
+      cuisines:["Food Court","Multi-cuisine"],
+      blurb:"Waterfront mall with a food court and casual restaurants, right by the Sentosa boardwalk."
+    },
+    {
+      name:"VivoCity",
+      address:"1 HarbourFront Walk, Singapore 098585",
+      lat:1.264293, lng:103.822305,
+      category:"mall", budget:3,
+      cuisines:["Restaurants","Multi-cuisine"],
+      blurb:"Singapore's largest mall — sit-down restaurants spanning Japanese, Chinese, Western and more."
+    }
+  ];
+
+  function haversineKm(lat1, lon1, lat2, lon2){
+    var R = 6371;
+    var toRad = function(d){ return d * Math.PI / 180; };
+    var dLat = toRad(lat2 - lat1);
+    var dLon = toRad(lon2 - lon1);
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  var RADIUS_KM = 2.5;
+  var budgetLabel = {1:"$", 2:"$$", 3:"$$$"};
+  var categoryLabel = {hawker:"Hawker Centre", mall:"Mall Dining"};
+
+  var data = PLACES
+    .map(function(p){
+      p.distance = haversineKm(HOME.lat, HOME.lng, p.lat, p.lng);
+      return p;
+    })
+    .filter(function(p){ return p.distance <= RADIUS_KM; })
+    .sort(function(a,b){ return a.distance - b.distance; });
+
+  var grid = document.getElementById("grid");
+  var resultsCount = document.getElementById("resultsCount");
+
+  function mapsUrl(p){
+    return "https://www.google.com/maps/dir/?api=1&origin=" + HOME.lat + "," + HOME.lng +
+           "&destination=" + p.lat + "," + p.lng + "&travelmode=walking";
+  }
+  function ratingsUrl(p){
+    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.name + ", Singapore");
+  }
+  function grabUrl(p){
+    return "https://food.grab.com/sg/en/search?search=" + encodeURIComponent(p.name);
+  }
+  function pandaUrl(p){
+    return "https://www.foodpanda.sg/search?q=" + encodeURIComponent(p.name);
+  }
+
+  function card(p){
+    var el = document.createElement("article");
+    el.className = "card";
+    el.setAttribute("data-budget", p.budget);
+
+    var chips = p.cuisines.map(function(c){ return '<span class="chip">' + c + '</span>'; }).join("");
+
+    el.innerHTML =
+      '<span class="tier">' + budgetLabel[p.budget] + '</span>' +
+      '<div class="card-top">' +
+        '<h2>' + p.name + '</h2>' +
+      '</div>' +
+      '<span class="category-pill ' + p.category + '">' + categoryLabel[p.category] + '</span>' +
+      '<div class="distance"><span class="num">' + p.distance.toFixed(2) + '</span><span class="unit">km away</span></div>' +
+      '<p class="addr-line">' + p.address + '</p>' +
+      '<p class="blurb">' + p.blurb + '</p>' +
+      '<div class="chips">' + chips + '</div>' +
+      '<div class="actions">' +
+        '<a href="' + mapsUrl(p) + '" target="_blank" rel="noopener">🗺️ Map</a>' +
+        '<details><summary>⭐ Ratings</summary></details>' +
+        '<a class="grab" href="' + grabUrl(p) + '" target="_blank" rel="noopener">🛵 GrabFood</a>' +
+        '<a class="panda" href="' + pandaUrl(p) + '" target="_blank" rel="noopener">🐼 foodpanda</a>' +
+        '<div class="ratings-panel" hidden>Live ratings aren\'t wired up yet — <a href="' + ratingsUrl(p) + '" target="_blank" rel="noopener">check current Google reviews →</a></div>' +
+      '</div>';
+
+    var details = el.querySelector("details");
+    var panel = el.querySelector(".ratings-panel");
+    details.addEventListener("toggle", function(){
+      panel.hidden = !details.open;
+    });
+
+    return el;
+  }
+
+  data.forEach(function(p){ grid.appendChild(card(p)); });
+
+  function applyFilter(budget){
+    var shown = 0;
+    grid.querySelectorAll(".card").forEach(function(el){
+      var match = budget === "all" || el.getAttribute("data-budget") === budget;
+      el.hidden = !match;
+      if(match) shown++;
+    });
+    resultsCount.textContent = "Showing " + shown + " of " + data.length + " spots";
+  }
+
+  var buttons = document.querySelectorAll(".budget-btn");
+  buttons.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      buttons.forEach(function(b){ b.setAttribute("aria-pressed","false"); });
+      btn.setAttribute("aria-pressed","true");
+      applyFilter(btn.getAttribute("data-budget"));
+    });
+  });
+
+  applyFilter("all");
+})();
+</script>
+</body>
+</html>
